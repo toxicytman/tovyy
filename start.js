@@ -11,7 +11,7 @@ const envfile = require('envfile');
 const staticFileMiddleware = express.static(path.join(__dirname, 'dist'));
 const fs = require('fs');
 const spinner = ora({ text: 'Building app..', spinner: 'dots', color: 'red' })
-
+//hi
 
 
 if (!process.env.MONGO_URI) {
