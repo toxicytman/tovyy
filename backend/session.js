@@ -29,7 +29,6 @@ const erouter = (usernames, pfps, settings) => {
 
     setInterval(async () => {
         let essions = await db.gsession.find({ started: false, start: { $lt: new Date() } });
-        console.log(essions);
         essions.forEach(async (session) => {
             let ssession = await db.gsession.findOne({ id: session.id });
             ssession.started = true;
@@ -67,9 +66,12 @@ const erouter = (usernames, pfps, settings) => {
         console.log(settings.sessions.discoping)
 
 
-        let msg = await webhookc.send({ content: settings.sessions.discoping.length ? settings.sessions.discoping : null, embeds: [embed], components: [components] });
-        console.log(msg.id)
-        return msg.id;
+        let msg = await webhookc.send({ content: settings.sessions.discoping.length ? settings.sessions.discoping : null, embeds: [embed], components: [components] }).catch(err => {
+            console.log(err);
+        });
+        
+        console.log(msg?.id)
+        return msg?.id;
     }
 
     async function unsendlog(data) {
@@ -167,10 +169,10 @@ const erouter = (usernames, pfps, settings) => {
         if (!cp) return res.status(401).json({ message: 'go away!' });
 
         let data = req.body;
+        console.log('Session incoming')
         let id = parseInt(await db.gsession.countDocuments({}));
         let treq = await axios.get(`https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${req.body.game}&size=768x432&format=Png&isCircular=false`);
         let thumbnail = treq.data.data[0]?.thumbnails[0]?.imageUrl;
-        console.log(data)
         let ginfo = await noblox.getUniverseInfo(req.body.type);
         let dbdata = {
             id: id + 1,
